@@ -1,2 +1,2 @@
-﻿60215
-/private/var/folders/4q/swsdnt6n5y1gjfm3z23qmjd80000gn/T/AppTranslocation/74D7D2D4-06B4-4FDC-9494-76EC47ACF37E/d/Godot_mono.app/Contents/MacOS/Godot
+﻿54366
+C:/Program Files (x86)/Godot_v3.6.2-stable_mono_win64/Godot_v3.6.2-stable_mono_win64.exe
