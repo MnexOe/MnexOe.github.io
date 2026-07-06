@@ -54,6 +54,7 @@ namespace AchtungDieSpurve.Lobby
 
 		public override void _Ready()
 		{
+			GD.Print("LobbyManager ready");
 			SetAnchorsAndMarginsPreset(LayoutPreset.Wide);
 			BuildUI();
 		}

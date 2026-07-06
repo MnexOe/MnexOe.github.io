@@ -11,12 +11,13 @@ config_version=4
 [application]
 
 config/name="Achtung Die Spurve"
+run/main_scene="res://Scenes/Lobby.tscn"
 config/icon="res://icon.png"
 config/main_scene="res://Scenes/Lobby.tscn"
 
 [autoload]
 
-GameData="res://Scripts/GameData.cs"
+GameData="*res://Scripts/GameData.cs"
 
 [gui]
 
