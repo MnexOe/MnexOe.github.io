@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Achtung Die Spurve")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e1ef06b57596281a1bdecb11ebd1f13b18a0046")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+51d6723a74a42b612f34090430b62fc1baa02213")]
 [assembly: System.Reflection.AssemblyProductAttribute("Achtung Die Spurve")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Achtung Die Spurve")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
