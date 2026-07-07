@@ -38,7 +38,6 @@ namespace AchtungDieSpurve.Lobby
 		private readonly Label[] _leftKeyLabels = new Label[MaxPlayers];
 		private readonly Label[] _rightKeyLabels = new Label[MaxPlayers];
 
-		private readonly Dictionary<KeyList, Button> _controlButtons = new Dictionary<KeyList, Button>();
 		private readonly HashSet<KeyList> _usedKeys = new HashSet<KeyList>();
 
 		private int _selectedPlayer = -1;
@@ -53,10 +52,48 @@ namespace AchtungDieSpurve.Lobby
 		{
 			LoadUiReferences();
 			ConnectPlayerRows();
-			ConnectControlButtons();
 
 			UpdateAllPlayerRows();
-			UpdateControlButtons();
+			UpdateStartButton();
+		}
+
+		public override void _Input(InputEvent @event)
+		{
+			if (_selectedPlayer < 0 || _selectionStep == 0)
+				return;
+
+			if (!(@event is InputEventKey keyEvent))
+				return;
+
+			if (!keyEvent.Pressed || keyEvent.Echo)
+				return;
+
+			KeyList key = (KeyList)keyEvent.Scancode;
+
+			// Ignore bare modifier keys
+			if (key == KeyList.Shift || key == KeyList.Control || key == KeyList.Alt || key == KeyList.Meta)
+				return;
+
+			if (_usedKeys.Contains(key))
+				return;
+
+			if (_selectionStep == 1)
+			{
+				_leftKeys[_selectedPlayer] = key;
+				_hasLeftKey[_selectedPlayer] = true;
+				_usedKeys.Add(key);
+				_selectionStep = 2;
+			}
+			else if (_selectionStep == 2)
+			{
+				_rightKeys[_selectedPlayer] = key;
+				_hasRightKey[_selectedPlayer] = true;
+				_usedKeys.Add(key);
+				_selectedPlayer = -1;
+				_selectionStep = 0;
+			}
+
+			UpdateAllPlayerRows();
 			UpdateStartButton();
 		}
 
@@ -66,7 +103,7 @@ namespace AchtungDieSpurve.Lobby
 
 			for (int i = 0; i < MaxPlayers; i++)
 			{
-				string rowPath = $"{basePath}/PlayerRows/Player{i + 1}Row";
+				string rowPath = $"{basePath}/TableRow/PlayerRows/Player{i + 1}Row";
 
 				_playerRows[i] = GetNode<PanelContainer>(rowPath);
 				_nameLabels[i] = GetNode<Label>($"{rowPath}/HBoxContainer/NameLabel");
@@ -74,10 +111,6 @@ namespace AchtungDieSpurve.Lobby
 				_rightKeyLabels[i] = GetNode<Label>($"{rowPath}/HBoxContainer/RightKeyLabel");
 
 				_nameLabels[i].Text = PlayerNames[i];
-
-				_nameLabels[i].AddColorOverride("font_color", PlayerColors[i]);
-				_leftKeyLabels[i].AddColorOverride("font_color", PlayerColors[i]);
-				_rightKeyLabels[i].AddColorOverride("font_color", PlayerColors[i]);
 
 				_playerRows[i].MouseFilter = MouseFilterEnum.Stop;
 				_nameLabels[i].MouseFilter = MouseFilterEnum.Ignore;
@@ -112,52 +145,6 @@ namespace AchtungDieSpurve.Lobby
 			}
 		}
 
-		private void ConnectControlButtons()
-		{
-			string gridPath = "MarginContainer/VBoxContainer/ControlButtonsGrid";
-
-			AddControlButton(KeyList.Q, $"{gridPath}/QButton");
-			AddControlButton(KeyList.W, $"{gridPath}/WButton");
-			AddControlButton(KeyList.E, $"{gridPath}/EButton");
-			AddControlButton(KeyList.R, $"{gridPath}/RButton");
-
-			AddControlButton(KeyList.A, $"{gridPath}/AButton");
-			AddControlButton(KeyList.S, $"{gridPath}/SButton");
-			AddControlButton(KeyList.D, $"{gridPath}/DButton");
-			AddControlButton(KeyList.F, $"{gridPath}/FButton");
-
-			AddControlButton(KeyList.Z, $"{gridPath}/ZButton");
-			AddControlButton(KeyList.X, $"{gridPath}/XButton");
-			AddControlButton(KeyList.C, $"{gridPath}/CButton");
-			AddControlButton(KeyList.V, $"{gridPath}/VButton");
-
-			AddControlButton(KeyList.Left, $"{gridPath}/LeftButton");
-			AddControlButton(KeyList.Right, $"{gridPath}/RightButton");
-			AddControlButton(KeyList.Up, $"{gridPath}/UpButton");
-			AddControlButton(KeyList.Down, $"{gridPath}/DownButton");
-		}
-
-		private void AddControlButton(KeyList key, string nodePath)
-		{
-			if (!HasNode(nodePath))
-			{
-				GD.PushWarning($"Missing control button: {nodePath}");
-				return;
-			}
-
-			Button button = GetNode<Button>(nodePath);
-			button.Text = KeyLabel(key);
-
-			_controlButtons[key] = button;
-
-			button.Connect(
-				"pressed",
-				this,
-				nameof(OnControlButtonPressed),
-				new Godot.Collections.Array { (int)key }
-			);
-		}
-
 		private void OnPlayerRowGuiInput(InputEvent @event, int playerIndex)
 		{
 			if (!(@event is InputEventMouseButton mouseEvent))
@@ -174,56 +161,32 @@ namespace AchtungDieSpurve.Lobby
 
 		private void OnPlayerRowClicked(int playerIndex)
 		{
-			bool clickedSamePlayer = _selectedPlayer == playerIndex;
+			bool hasControls = _hasLeftKey[playerIndex] || _hasRightKey[playerIndex];
 
-			ClearPlayerControls(playerIndex);
-
-			if (clickedSamePlayer)
+			if (hasControls)
 			{
-				_selectedPlayer = -1;
-				_selectionStep = 0;
+				ClearPlayerControls(playerIndex);
+				if (_selectedPlayer == playerIndex)
+				{
+					_selectedPlayer = -1;
+					_selectionStep = 0;
+				}
 			}
 			else
 			{
-				_selectedPlayer = playerIndex;
-				_selectionStep = 1;
+				if (_selectedPlayer == playerIndex)
+				{
+					_selectedPlayer = -1;
+					_selectionStep = 0;
+				}
+				else
+				{
+					_selectedPlayer = playerIndex;
+					_selectionStep = 1;
+				}
 			}
 
 			UpdateAllPlayerRows();
-			UpdateControlButtons();
-			UpdateStartButton();
-		}
-
-		private void OnControlButtonPressed(int keyAsInt)
-		{
-			if (_selectedPlayer < 0)
-				return;
-
-			KeyList key = (KeyList)keyAsInt;
-
-			if (_usedKeys.Contains(key))
-				return;
-
-			if (_selectionStep == 1)
-			{
-				_leftKeys[_selectedPlayer] = key;
-				_hasLeftKey[_selectedPlayer] = true;
-				_usedKeys.Add(key);
-
-				_selectionStep = 2;
-			}
-			else if (_selectionStep == 2)
-			{
-				_rightKeys[_selectedPlayer] = key;
-				_hasRightKey[_selectedPlayer] = true;
-				_usedKeys.Add(key);
-
-				_selectedPlayer = -1;
-				_selectionStep = 0;
-			}
-
-			UpdateAllPlayerRows();
-			UpdateControlButtons();
 			UpdateStartButton();
 		}
 
@@ -252,28 +215,20 @@ namespace AchtungDieSpurve.Lobby
 			if (_hasLeftKey[index])
 				_leftKeyLabels[index].Text = KeyLabel(_leftKeys[index]);
 			else if (currentlySelecting && _selectionStep == 1)
-				_leftKeyLabels[index].Text = "Select...";
+				_leftKeyLabels[index].Text = "Press a key...";
 			else
 				_leftKeyLabels[index].Text = "-";
 
 			if (_hasRightKey[index])
 				_rightKeyLabels[index].Text = KeyLabel(_rightKeys[index]);
 			else if (currentlySelecting && _selectionStep == 2)
-				_rightKeyLabels[index].Text = "Select...";
+				_rightKeyLabels[index].Text = "Press a key...";
 			else
 				_rightKeyLabels[index].Text = "-";
 
 			_playerRows[index].Modulate = currentlySelecting
 				? new Color(1f, 1f, 0.75f)
 				: Colors.White;
-		}
-
-		private void UpdateControlButtons()
-		{
-			foreach (var pair in _controlButtons)
-			{
-				pair.Value.Disabled = _usedKeys.Contains(pair.Key);
-			}
 		}
 
 		private void UpdateStartButton()

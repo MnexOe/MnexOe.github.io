@@ -1,10 +1,31 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scripts/Lobby/LobbyManager.cs" type="Script" id=1]
 [ext_resource path="res://Assets/Fonts/Baloo2-VariableFont_wght.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Assets/Images/sillygoose.png" type="Texture" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 40
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 20
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 20
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 20
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 20
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 20
 font_data = ExtResource( 2 )
 
 [node name="Lobby" type="Control"]
@@ -27,7 +48,7 @@ margin_bottom = -40.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 margin_right = 944.0
-margin_bottom = 529.0
+margin_bottom = 526.0
 custom_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
@@ -42,309 +63,266 @@ margin_top = 85.0
 margin_right = 944.0
 margin_bottom = 89.0
 
-[node name="PlayerRows" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TableRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 109.0
 margin_right = 944.0
-margin_bottom = 265.0
+margin_bottom = 360.0
+custom_constants/separation = 20
 
-[node name="Header" type="PanelContainer" parent="MarginContainer/VBoxContainer/PlayerRows"]
-self_modulate = Color( 0, 0, 0, 1 )
-margin_right = 944.0
-margin_bottom = 28.0
+[node name="PlayerRows" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TableRow"]
+margin_right = 757.0
+margin_bottom = 251.0
+size_flags_horizontal = 3
 
-[node name="HeaderRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PlayerRows/Header"]
+[node name="Header" type="PanelContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows"]
+self_modulate = Color( 0.0470588, 0.0588235, 0.0392157, 0 )
+margin_right = 757.0
+margin_bottom = 47.0
+
+[node name="HeaderRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Header"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 937.0
-margin_bottom = 21.0
+margin_right = 750.0
+margin_bottom = 40.0
 
-[node name="Player" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Header/HeaderRow"]
-margin_right = 39.0
-margin_bottom = 14.0
+[node name="Player" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Header/HeaderRow"]
+margin_right = 240.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 240, 0 )
+custom_fonts/font = SubResource( 3 )
 text = "Player"
 
-[node name="Control 1" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Header/HeaderRow"]
-margin_left = 43.0
-margin_right = 101.0
-margin_bottom = 14.0
+[node name="Control 1" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Header/HeaderRow"]
+margin_left = 244.0
+margin_right = 404.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_fonts/font = SubResource( 3 )
 text = "Control 1"
 
-[node name="Control 2" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Header/HeaderRow"]
-margin_left = 105.0
-margin_right = 163.0
-margin_bottom = 14.0
+[node name="Control 2" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Header/HeaderRow"]
+margin_left = 408.0
+margin_right = 568.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_fonts/font = SubResource( 3 )
 text = "Control 2"
 
-[node name="Player1Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/PlayerRows"]
-self_modulate = Color( 0, 0, 0, 1 )
+[node name="Player1Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows"]
+self_modulate = Color( 0.0470588, 0.0588235, 0.0392157, 0 )
 show_behind_parent = true
-margin_top = 32.0
-margin_right = 944.0
-margin_bottom = 60.0
+margin_top = 51.0
+margin_right = 757.0
+margin_bottom = 98.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PlayerRows/Player1Row"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player1Row"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 937.0
-margin_bottom = 21.0
+margin_right = 750.0
+margin_bottom = 40.0
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player1Row/HBoxContainer"]
-margin_right = 82.0
-margin_bottom = 14.0
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player1Row/HBoxContainer"]
+margin_right = 240.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 240, 0 )
+custom_colors/font_color = Color( 0.607843, 0.364706, 0.898039, 1 )
+custom_fonts/font = SubResource( 2 )
 text = "DuckDuckGo"
 
-[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player1Row/HBoxContainer"]
-margin_left = 86.0
-margin_right = 86.0
-margin_bottom = 14.0
+[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player1Row/HBoxContainer"]
+margin_left = 244.0
+margin_right = 404.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0.607843, 0.364706, 0.898039, 1 )
+custom_fonts/font = SubResource( 4 )
 
-[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player1Row/HBoxContainer"]
-margin_left = 90.0
-margin_right = 90.0
-margin_bottom = 14.0
+[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player1Row/HBoxContainer"]
+margin_left = 408.0
+margin_right = 568.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0.607843, 0.364706, 0.898039, 1 )
+custom_fonts/font = SubResource( 4 )
 
-[node name="Player2Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/PlayerRows"]
-self_modulate = Color( 0, 0, 0, 1 )
+[node name="Player2Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows"]
+self_modulate = Color( 0.0470588, 0.0588235, 0.0392157, 0 )
 show_behind_parent = true
-margin_top = 64.0
-margin_right = 944.0
-margin_bottom = 92.0
+margin_top = 102.0
+margin_right = 757.0
+margin_bottom = 149.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PlayerRows/Player2Row"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player2Row"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 937.0
-margin_bottom = 21.0
+margin_right = 750.0
+margin_bottom = 40.0
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player2Row/HBoxContainer"]
-margin_right = 116.0
-margin_bottom = 14.0
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player2Row/HBoxContainer"]
+margin_right = 240.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 240, 0 )
+custom_colors/font_color = Color( 0.996078, 0.894118, 0.25098, 1 )
+custom_fonts/font = SubResource( 2 )
 text = "Flappy McFlapface"
 
-[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player2Row/HBoxContainer"]
-margin_left = 120.0
-margin_right = 120.0
-margin_bottom = 14.0
+[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player2Row/HBoxContainer"]
+margin_left = 244.0
+margin_right = 404.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0.996078, 0.894118, 0.25098, 1 )
+custom_fonts/font = SubResource( 4 )
 
-[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player2Row/HBoxContainer"]
-margin_left = 124.0
-margin_right = 124.0
-margin_bottom = 14.0
+[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player2Row/HBoxContainer"]
+margin_left = 408.0
+margin_right = 568.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0.996078, 0.894118, 0.25098, 1 )
+custom_fonts/font = SubResource( 4 )
 
-[node name="Player3Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/PlayerRows"]
-self_modulate = Color( 0, 0, 0, 1 )
+[node name="Player3Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows"]
+self_modulate = Color( 0.0470588, 0.0588235, 0.0392157, 0 )
 show_behind_parent = true
-margin_top = 96.0
-margin_right = 944.0
-margin_bottom = 124.0
+margin_top = 153.0
+margin_right = 757.0
+margin_bottom = 200.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PlayerRows/Player3Row"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player3Row"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 937.0
-margin_bottom = 21.0
+margin_right = 750.0
+margin_bottom = 40.0
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player3Row/HBoxContainer"]
-margin_right = 100.0
-margin_bottom = 14.0
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player3Row/HBoxContainer"]
+margin_right = 240.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 240, 0 )
+custom_colors/font_color = Color( 0, 0.733333, 0.976471, 1 )
+custom_fonts/font = SubResource( 2 )
 text = "Tornado Toucan"
 
-[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player3Row/HBoxContainer"]
-margin_left = 104.0
-margin_right = 104.0
-margin_bottom = 14.0
+[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player3Row/HBoxContainer"]
+margin_left = 244.0
+margin_right = 404.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0, 0.733333, 0.976471, 1 )
+custom_fonts/font = SubResource( 4 )
 
-[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player3Row/HBoxContainer"]
-margin_left = 108.0
-margin_right = 108.0
-margin_bottom = 14.0
+[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player3Row/HBoxContainer"]
+margin_left = 408.0
+margin_right = 568.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0, 0.733333, 0.976471, 1 )
+custom_fonts/font = SubResource( 4 )
 
-[node name="Player4Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/PlayerRows"]
-self_modulate = Color( 0, 0, 0, 1 )
+[node name="Player4Row" type="PanelContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows"]
+self_modulate = Color( 0.0470588, 0.0588235, 0.0392157, 0 )
 show_behind_parent = true
-margin_top = 128.0
-margin_right = 944.0
-margin_bottom = 156.0
+margin_top = 204.0
+margin_right = 757.0
+margin_bottom = 251.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PlayerRows/Player4Row"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player4Row"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 937.0
-margin_bottom = 21.0
+margin_right = 750.0
+margin_bottom = 40.0
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player4Row/HBoxContainer"]
-margin_right = 141.0
-margin_bottom = 14.0
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player4Row/HBoxContainer"]
+margin_right = 240.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 240, 0 )
+custom_colors/font_color = Color( 0.945098, 0.356863, 0.709804, 1 )
+custom_fonts/font = SubResource( 2 )
 text = "Eggward Featherhands"
 
-[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player4Row/HBoxContainer"]
-margin_left = 145.0
-margin_right = 145.0
-margin_bottom = 14.0
+[node name="LeftKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player4Row/HBoxContainer"]
+margin_left = 244.0
+margin_right = 404.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0.945098, 0.356863, 0.709804, 1 )
+custom_fonts/font = SubResource( 4 )
 
-[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerRows/Player4Row/HBoxContainer"]
-margin_left = 149.0
-margin_right = 149.0
-margin_bottom = 14.0
+[node name="RightKeyLabel" type="Label" parent="MarginContainer/VBoxContainer/TableRow/PlayerRows/Player4Row/HBoxContainer"]
+margin_left = 408.0
+margin_right = 568.0
+margin_bottom = 33.0
+rect_min_size = Vector2( 160, 0 )
+custom_colors/font_color = Color( 0.945098, 0.356863, 0.709804, 1 )
+custom_fonts/font = SubResource( 4 )
+
+[node name="GooseTexture" type="TextureRect" parent="MarginContainer/VBoxContainer/TableRow"]
+margin_left = 777.0
+margin_right = 944.0
+margin_bottom = 251.0
+rect_min_size = Vector2( 167, 251 )
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 5
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-margin_top = 285.0
+margin_top = 380.0
 margin_right = 944.0
-margin_bottom = 289.0
-
-[node name="ControlButtonsGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
-margin_top = 309.0
-margin_right = 944.0
-margin_bottom = 401.0
-columns = 4
-
-[node name="QButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_right = 36.0
-margin_bottom = 20.0
-text = "Q"
-
-[node name="WButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 40.0
-margin_right = 84.0
-margin_bottom = 20.0
-text = "W"
-
-[node name="EButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 88.0
-margin_right = 118.0
-margin_bottom = 20.0
-text = "E"
-
-[node name="RButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 122.0
-margin_right = 170.0
-margin_bottom = 20.0
-text = "R"
-
-[node name="AButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_top = 24.0
-margin_right = 36.0
-margin_bottom = 44.0
-text = "A"
-
-[node name="SButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 40.0
-margin_top = 24.0
-margin_right = 84.0
-margin_bottom = 44.0
-text = "S"
-
-[node name="DButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 88.0
-margin_top = 24.0
-margin_right = 118.0
-margin_bottom = 44.0
-text = "D"
-
-[node name="FButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 122.0
-margin_top = 24.0
-margin_right = 170.0
-margin_bottom = 44.0
-text = "F"
-
-[node name="ZButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_top = 48.0
-margin_right = 36.0
-margin_bottom = 68.0
-text = "Z"
-
-[node name="XButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 40.0
-margin_top = 48.0
-margin_right = 84.0
-margin_bottom = 68.0
-text = "X"
-
-[node name="CButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 88.0
-margin_top = 48.0
-margin_right = 118.0
-margin_bottom = 68.0
-text = "C"
-
-[node name="VButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 122.0
-margin_top = 48.0
-margin_right = 170.0
-margin_bottom = 68.0
-text = "V"
-
-[node name="LeftButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_top = 72.0
-margin_right = 36.0
-margin_bottom = 92.0
-text = "Left"
-
-[node name="RightButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 40.0
-margin_top = 72.0
-margin_right = 84.0
-margin_bottom = 92.0
-text = "Right"
-
-[node name="UpButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 88.0
-margin_top = 72.0
-margin_right = 118.0
-margin_bottom = 92.0
-text = "Up"
-
-[node name="DownButton" type="Button" parent="MarginContainer/VBoxContainer/ControlButtonsGrid"]
-margin_left = 122.0
-margin_top = 72.0
-margin_right = 170.0
-margin_bottom = 92.0
-text = "Down"
-
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-margin_top = 421.0
-margin_right = 944.0
-margin_bottom = 425.0
+margin_bottom = 384.0
 
 [node name="TargetScoreRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-margin_top = 445.0
+margin_top = 404.0
 margin_right = 944.0
-margin_bottom = 465.0
+margin_bottom = 443.0
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TargetScoreRow"]
 margin_top = 3.0
-margin_right = 78.0
-margin_bottom = 17.0
+margin_right = 247.0
+margin_bottom = 36.0
+rect_min_size = Vector2( 247, 0 )
+custom_fonts/font = SubResource( 5 )
 text = "Target Score"
 
 [node name="DecreaseTargetScoreButton" type="Button" parent="MarginContainer/VBoxContainer/TargetScoreRow"]
-margin_left = 82.0
-margin_right = 99.0
-margin_bottom = 20.0
+self_modulate = Color( 0, 0.960784, 0.831373, 1 )
+margin_left = 251.0
+margin_right = 271.0
+margin_bottom = 39.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
 text = "-"
 
 [node name="TargetScoreLabel" type="Label" parent="MarginContainer/VBoxContainer/TargetScoreRow"]
-margin_left = 103.0
+margin_left = 275.0
 margin_top = 3.0
-margin_right = 119.0
-margin_bottom = 17.0
+margin_right = 355.0
+margin_bottom = 36.0
+rect_min_size = Vector2( 80, 0 )
+custom_fonts/font = SubResource( 5 )
 text = "10"
 align = 1
+valign = 1
 
 [node name="IncreaseTargetScoreButton" type="Button" parent="MarginContainer/VBoxContainer/TargetScoreRow"]
-margin_left = 123.0
-margin_right = 143.0
-margin_bottom = 20.0
+self_modulate = Color( 0, 0.960784, 0.831373, 1 )
+margin_left = 359.0
+margin_right = 382.0
+margin_bottom = 39.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
 text = "+"
 
-[node name="HSeparator4" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-margin_top = 485.0
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+margin_top = 463.0
 margin_right = 944.0
-margin_bottom = 489.0
+margin_bottom = 467.0
 
 [node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer"]
-margin_top = 509.0
+self_modulate = Color( 0, 0.960784, 0.831373, 1 )
+margin_top = 487.0
 margin_right = 944.0
-margin_bottom = 529.0
+margin_bottom = 526.0
+custom_colors/font_color_disabled = Color( 1, 1, 1, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 6 )
 text = "Start"
