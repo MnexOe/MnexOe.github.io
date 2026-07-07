@@ -1,0 +1,53 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/jarl/MnexOe.github.io/Achtung Die Spurve.csproj": {}
+  },
+  "projects": {
+    "/home/jarl/MnexOe.github.io/Achtung Die Spurve.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/jarl/MnexOe.github.io/Achtung Die Spurve.csproj",
+        "projectName": "Achtung Die Spurve",
+        "projectPath": "/home/jarl/MnexOe.github.io/Achtung Die Spurve.csproj",
+        "packagesPath": "/home/jarl/.nuget/packages/",
+        "outputPath": "/home/jarl/MnexOe.github.io/.mono/temp/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/jarl/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "targetAlias": "net472",
+          "dependencies": {
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.128/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
