@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-export var SPEED := 100.0
+export var SPEED := 200.0
 export var ANGULAR_S := 3.0  # radians per second
 
 var velocity := Vector2.ZERO
@@ -26,4 +26,3 @@ func _physics_process(delta):
 			die()
 	# constant forward movement
 	velocity = Vector2.RIGHT.rotated(rotation) * SPEED
-	velocity = move_and_slide(velocity)
