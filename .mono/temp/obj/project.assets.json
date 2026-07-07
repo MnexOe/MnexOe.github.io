@@ -415,19 +415,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/danielstephensen/.nuget/packages/": {}
+    "/home/jarl/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/danielstephensen/Documents/Work/Implementation/MnexOe.github.io/Achtung Die Spurve.csproj",
+      "projectUniqueName": "/home/jarl/MnexOe.github.io/Achtung Die Spurve.csproj",
       "projectName": "Achtung Die Spurve",
-      "projectPath": "/Users/danielstephensen/Documents/Work/Implementation/MnexOe.github.io/Achtung Die Spurve.csproj",
-      "packagesPath": "/Users/danielstephensen/.nuget/packages/",
-      "outputPath": "/Users/danielstephensen/Documents/Work/Implementation/MnexOe.github.io/.mono/temp/obj/",
+      "projectPath": "/home/jarl/MnexOe.github.io/Achtung Die Spurve.csproj",
+      "packagesPath": "/home/jarl/.nuget/packages/",
+      "outputPath": "/home/jarl/MnexOe.github.io/.mono/temp/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/danielstephensen/.nuget/NuGet/NuGet.Config"
+        "/home/jarl/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net472"
@@ -445,11 +445,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -463,7 +458,7 @@
             "autoReferenced": true
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.410/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.128/RuntimeIdentifierGraph.json"
       }
     }
   }

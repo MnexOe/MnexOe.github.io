@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "WOof080p+Wc=",
+  "dgSpecHash": "kLR4abkkveg+DuOgM5GF4x+vDrgIiR/9TERhjc4A1nq3yNacnFLMhUBWis498kLSIsO/JiMTrbKucjZsFjwIbQ==",
   "success": true,
-  "projectFilePath": "/Users/danielstephensen/Documents/Work/Implementation/MnexOe.github.io/Achtung Die Spurve.csproj",
+  "projectFilePath": "/home/jarl/MnexOe.github.io/Achtung Die Spurve.csproj",
   "expectedPackageFiles": [
-    "/Users/danielstephensen/.nuget/packages/microsoft.netframework.referenceassemblies/1.0.3/microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
-    "/Users/danielstephensen/.nuget/packages/microsoft.netframework.referenceassemblies.net472/1.0.3/microsoft.netframework.referenceassemblies.net472.1.0.3.nupkg.sha512"
+    "/home/jarl/.nuget/packages/microsoft.netframework.referenceassemblies/1.0.3/microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "/home/jarl/.nuget/packages/microsoft.netframework.referenceassemblies.net472/1.0.3/microsoft.netframework.referenceassemblies.net472.1.0.3.nupkg.sha512"
   ],
   "logs": []
 }

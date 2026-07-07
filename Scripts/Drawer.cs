@@ -6,6 +6,8 @@ public class Drawer : Node2D
 {
 	private Vector2 position;
 	private Line2D trail;
+	private StaticBody2D body;
+	private CollisionPolygon2D trailCollision;
 
 	// How "straight" a run of points needs to be to get compressed.
 	// Smaller = stricter (keeps more points), larger = more aggressive compression.
@@ -26,7 +28,7 @@ public class Drawer : Node2D
 		if (uncompressedCount < 3)
 			return;
 
-		GD.Print($"Compressing tail: {uncompressedCount} raw points (from index {compressedIndex})");
+		//GD.Print($"Compressing tail: {uncompressedCount} raw points (from index {compressedIndex})");
 
 		// Simplify only the tail, starting from the last already-compressed
 		// point so the new segment connects smoothly to the old one.
@@ -76,7 +78,52 @@ public class Drawer : Node2D
 		// since more points will keep getting appended after it.
 		compressedIndex = fullPoints.Count - 1;
 
-		GD.Print($"Trail now has {trail.Points.Length} points, compressedIndex={compressedIndex}");
+		//GD.Print($"Trail now has {trail.Points.Length} points, compressedIndex={compressedIndex}");
+	}
+	
+	private void MakeCollsionPolygon(Vector2[] points, CollisionPolygon2D collisionShape)
+	{
+		if (points.Length < 2)
+			return;
+
+		float half = trail.Width / 2f;
+		var left = new List<Vector2>();
+		var right = new List<Vector2>();
+
+		for (int k = 0; k < points.Length; k++)
+		{
+			// Direction at this point: average of incoming/outgoing segment
+			// directions so corners get a sensible miter instead of a hard notch.
+			Vector2 dir;
+			if (k == 0)
+			{
+				dir = (points[k + 1] - points[k]).Normalized();
+			}
+			else if (k == points.Length - 1)
+			{
+				dir = (points[k] - points[k - 1]).Normalized();
+			}
+			else
+			{
+				Vector2 dirIn = (points[k] - points[k - 1]).Normalized();
+				Vector2 dirOut = (points[k + 1] - points[k]).Normalized();
+				dir = (dirIn + dirOut).Normalized();
+				if (dir == Vector2.Zero) dir = dirIn; // 180° reversal edge case
+			}
+
+			Vector2 normal = new Vector2(-dir.y, dir.x);
+			left.Add(points[k] + normal * half);
+			right.Add(points[k] - normal * half);
+		}
+
+		// Build closed outline: left side forward, right side backward.
+		var outline = new List<Vector2>(left.Count + right.Count);
+		outline.AddRange(left);
+		right.Reverse();
+		outline.AddRange(right);
+
+		collisionShape.Polygon = outline.ToArray();
+		collisionShape.BuildMode = CollisionPolygon2D.BuildModeEnum.Solids;
 	}
 
 	// Called when the node enters the scene tree for the first time.
@@ -84,6 +131,9 @@ public class Drawer : Node2D
 	{
 		position = GlobalPosition;
 		trail = GetNode<Line2D>("Trail");
+		body = GetNode<StaticBody2D>("TrailBody");
+		trailCollision = body.GetNode<CollisionPolygon2D>("TrailCollision");
+		
 
 		trail.SetAsToplevel(true);
 		trail.AddPoint(position);
@@ -98,5 +148,7 @@ public class Drawer : Node2D
 
 		position = GlobalPosition;
 		trail.AddPoint(position);
+		
+		MakeCollsionPolygon(trail.Points, trailCollision);
 	}
 }
