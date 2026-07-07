@@ -17,11 +17,13 @@ scale = Vector2( 0.095209, 0.0896084 )
 texture = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 6, 8 )
 shape = SubResource( 1 )
 
 [node name="deathdetector" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="deathdetector"]
-position = Vector2( 6, 8 )
-shape = SubResource( 1 )
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="deathdetector"]
+position = Vector2( 39, 4 )
+build_mode = 1
+polygon = PoolVector2Array( -17, -9, 2, 0, -19, 10 )
