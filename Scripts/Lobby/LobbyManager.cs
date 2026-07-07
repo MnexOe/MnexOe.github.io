@@ -8,300 +8,340 @@ namespace AchtungDieSpurve.Lobby
 {
 	public class LobbyManager : Control
 	{
-		private const int MaxPlayers = 6;
+		private const int MaxPlayers = 4;
 
 		private static readonly Color[] PlayerColors =
 		{
-			new Color(1f,   0.3f, 0.3f),  // Red
-			new Color(0.3f, 0.5f, 1f),    // Blue
-			new Color(1f,   1f,   0.2f),  // Yellow
-			new Color(0.3f, 1f,   0.3f),  // Green
-			new Color(1f,   0.3f, 1f),    // Magenta
-			new Color(0.3f, 1f,   1f),    // Cyan
+			new Color(1f, 0.3f, 0.3f),
+			new Color(0.3f, 0.5f, 1f),
+			new Color(1f, 1f, 0.2f),
+			new Color(0.3f, 1f, 0.3f),
 		};
 
 		private static readonly string[] PlayerNames =
-			{ "Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6" };
+		{
+			"DuckDuckGo",
+			"Flappy McFlapface",
+			"Tornado Toucan",
+			"Eggward Featherhands"
+		};
 
-		private static readonly KeyList[] DefaultLeftKeys =
-			{ KeyList.Q, KeyList.O, KeyList.C, KeyList.Left, KeyList.Kp1, KeyList.Z };
+		private static readonly int[] TargetScoreOptions = { 10, 20, 30, 50, 100 };
 
-		private static readonly KeyList[] DefaultRightKeys =
-			{ KeyList.W, KeyList.P, KeyList.V, KeyList.Right, KeyList.Kp3, KeyList.X };
+		private readonly KeyList[] _leftKeys = new KeyList[MaxPlayers];
+		private readonly KeyList[] _rightKeys = new KeyList[MaxPlayers];
+		private readonly bool[] _hasLeftKey = new bool[MaxPlayers];
+		private readonly bool[] _hasRightKey = new bool[MaxPlayers];
 
-		private static readonly int[] TargetScoreOptions = { 3, 5, 10, 15, 20 };
+		private readonly PanelContainer[] _playerRows = new PanelContainer[MaxPlayers];
+		private readonly Label[] _nameLabels = new Label[MaxPlayers];
+		private readonly Label[] _leftKeyLabels = new Label[MaxPlayers];
+		private readonly Label[] _rightKeyLabels = new Label[MaxPlayers];
 
-		// ── state ─────────────────────────────────────────────────────────────
-		private readonly bool[]     _slotActive = new bool[MaxPlayers];
-		private readonly KeyList[]  _leftKeys   = (KeyList[])DefaultLeftKeys.Clone();
-		private readonly KeyList[]  _rightKeys  = (KeyList[])DefaultRightKeys.Clone();
-		private int _targetScoreIndex = 2; // default: 10
+		private readonly Dictionary<KeyList, Button> _controlButtons = new Dictionary<KeyList, Button>();
+		private readonly HashSet<KeyList> _usedKeys = new HashSet<KeyList>();
 
-		// ── rebind state ──────────────────────────────────────────────────────
-		private int    _rebindSlot   = -1;
-		private bool   _rebindIsLeft;
-		private Button _rebindButton;
+		private int _selectedPlayer = -1;
+		private int _selectionStep = 0; // 0 = none, 1 = left key, 2 = right key
 
-		// ── UI refs ───────────────────────────────────────────────────────────
-		private readonly ColorRect[] _colorSwatches  = new ColorRect[MaxPlayers];
-		private readonly Button[]    _joinButtons    = new Button[MaxPlayers];
-		private readonly Button[]    _leftKeyButtons = new Button[MaxPlayers];
-		private readonly Button[]    _rightKeyButtons = new Button[MaxPlayers];
-		private Label  _targetScoreLabel;
+		private int _targetScoreIndex = 2;
+
+		private Label _targetScoreLabel;
 		private Button _startButton;
-
-		// ─────────────────────────────────────────────────────────────────────
 
 		public override void _Ready()
 		{
-			GD.Print("LobbyManager ready");
-			SetAnchorsAndMarginsPreset(LayoutPreset.Wide);
-			BuildUI();
+			LoadUiReferences();
+			ConnectPlayerRows();
+			ConnectControlButtons();
+
+			UpdateAllPlayerRows();
+			UpdateControlButtons();
+			UpdateStartButton();
 		}
 
-		public override void _Input(InputEvent @event)
+		private void LoadUiReferences()
 		{
-			if (_rebindSlot < 0) return;
-			if (!(@event is InputEventKey keyEvent) || !keyEvent.Pressed || keyEvent.Echo) return;
+			string basePath = "MarginContainer/VBoxContainer";
 
-			var key = (KeyList)keyEvent.Scancode;
-
-			if (key == KeyList.Escape)
+			for (int i = 0; i < MaxPlayers; i++)
 			{
-				CancelRebind();
+				string rowPath = $"{basePath}/PlayerRows/Player{i + 1}Row";
+
+				_playerRows[i] = GetNode<PanelContainer>(rowPath);
+				_nameLabels[i] = GetNode<Label>($"{rowPath}/HBoxContainer/NameLabel");
+				_leftKeyLabels[i] = GetNode<Label>($"{rowPath}/HBoxContainer/LeftKeyLabel");
+				_rightKeyLabels[i] = GetNode<Label>($"{rowPath}/HBoxContainer/RightKeyLabel");
+
+				_nameLabels[i].Text = PlayerNames[i];
+
+				_nameLabels[i].AddColorOverride("font_color", PlayerColors[i]);
+				_leftKeyLabels[i].AddColorOverride("font_color", PlayerColors[i]);
+				_rightKeyLabels[i].AddColorOverride("font_color", PlayerColors[i]);
+
+				_playerRows[i].MouseFilter = MouseFilterEnum.Stop;
+				_nameLabels[i].MouseFilter = MouseFilterEnum.Ignore;
+				_leftKeyLabels[i].MouseFilter = MouseFilterEnum.Ignore;
+				_rightKeyLabels[i].MouseFilter = MouseFilterEnum.Ignore;
+			}
+
+			_targetScoreLabel = GetNode<Label>($"{basePath}/TargetScoreRow/TargetScoreLabel");
+			_startButton = GetNode<Button>($"{basePath}/StartButton");
+
+			_targetScoreLabel.Text = TargetScoreOptions[_targetScoreIndex].ToString();
+
+			GetNode<Button>($"{basePath}/TargetScoreRow/DecreaseTargetScoreButton")
+				.Connect("pressed", this, nameof(OnTargetScoreDecrease));
+
+			GetNode<Button>($"{basePath}/TargetScoreRow/IncreaseTargetScoreButton")
+				.Connect("pressed", this, nameof(OnTargetScoreIncrease));
+
+			_startButton.Connect("pressed", this, nameof(OnStartPressed));
+		}
+
+		private void ConnectPlayerRows()
+		{
+			for (int i = 0; i < MaxPlayers; i++)
+			{
+				_playerRows[i].Connect(
+					"gui_input",
+					this,
+					nameof(OnPlayerRowGuiInput),
+					new Godot.Collections.Array { i }
+				);
+			}
+		}
+
+		private void ConnectControlButtons()
+		{
+			string gridPath = "MarginContainer/VBoxContainer/ControlButtonsGrid";
+
+			AddControlButton(KeyList.Q, $"{gridPath}/QButton");
+			AddControlButton(KeyList.W, $"{gridPath}/WButton");
+			AddControlButton(KeyList.E, $"{gridPath}/EButton");
+			AddControlButton(KeyList.R, $"{gridPath}/RButton");
+
+			AddControlButton(KeyList.A, $"{gridPath}/AButton");
+			AddControlButton(KeyList.S, $"{gridPath}/SButton");
+			AddControlButton(KeyList.D, $"{gridPath}/DButton");
+			AddControlButton(KeyList.F, $"{gridPath}/FButton");
+
+			AddControlButton(KeyList.Z, $"{gridPath}/ZButton");
+			AddControlButton(KeyList.X, $"{gridPath}/XButton");
+			AddControlButton(KeyList.C, $"{gridPath}/CButton");
+			AddControlButton(KeyList.V, $"{gridPath}/VButton");
+
+			AddControlButton(KeyList.Left, $"{gridPath}/LeftButton");
+			AddControlButton(KeyList.Right, $"{gridPath}/RightButton");
+			AddControlButton(KeyList.Up, $"{gridPath}/UpButton");
+			AddControlButton(KeyList.Down, $"{gridPath}/DownButton");
+		}
+
+		private void AddControlButton(KeyList key, string nodePath)
+		{
+			if (!HasNode(nodePath))
+			{
+				GD.PushWarning($"Missing control button: {nodePath}");
+				return;
+			}
+
+			Button button = GetNode<Button>(nodePath);
+			button.Text = KeyLabel(key);
+
+			_controlButtons[key] = button;
+
+			button.Connect(
+				"pressed",
+				this,
+				nameof(OnControlButtonPressed),
+				new Godot.Collections.Array { (int)key }
+			);
+		}
+
+		private void OnPlayerRowGuiInput(InputEvent @event, int playerIndex)
+		{
+			if (!(@event is InputEventMouseButton mouseEvent))
+				return;
+
+			if (!mouseEvent.Pressed)
+				return;
+
+			if (mouseEvent.ButtonIndex != (int)ButtonList.Left)
+				return;
+
+			OnPlayerRowClicked(playerIndex);
+		}
+
+		private void OnPlayerRowClicked(int playerIndex)
+		{
+			bool clickedSamePlayer = _selectedPlayer == playerIndex;
+
+			ClearPlayerControls(playerIndex);
+
+			if (clickedSamePlayer)
+			{
+				_selectedPlayer = -1;
+				_selectionStep = 0;
 			}
 			else
 			{
-				if (_rebindIsLeft) _leftKeys[_rebindSlot]  = key;
-				else               _rightKeys[_rebindSlot] = key;
-
-				_rebindButton.Text     = KeyLabel(key);
-				_rebindButton.Modulate = Colors.White;
-				_rebindSlot            = -1;
-				_rebindButton          = null;
+				_selectedPlayer = playerIndex;
+				_selectionStep = 1;
 			}
 
-			GetTree().SetInputAsHandled();
+			UpdateAllPlayerRows();
+			UpdateControlButtons();
+			UpdateStartButton();
 		}
 
-		// ── UI construction ───────────────────────────────────────────────────
-
-		private void BuildUI()
+		private void OnControlButtonPressed(int keyAsInt)
 		{
-			var margin = new MarginContainer();
-			AddChild(margin);
-			margin.SetAnchorsAndMarginsPreset(LayoutPreset.Wide);
-			margin.AddConstantOverride("margin_left",   60);
-			margin.AddConstantOverride("margin_right",  60);
-			margin.AddConstantOverride("margin_top",    30);
-			margin.AddConstantOverride("margin_bottom", 30);
+			if (_selectedPlayer < 0)
+				return;
 
-			var root = new VBoxContainer();
-			root.AddConstantOverride("separation", 12);
-			margin.AddChild(root);
+			KeyList key = (KeyList)keyAsInt;
 
-			// Title
-			var title = new Label { Text = "ACHTUNG DIE SPURVE" };
-			title.Align = Label.AlignEnum.Center;
-			root.AddChild(title);
+			if (_usedKeys.Contains(key))
+				return;
 
-			root.AddChild(new HSeparator());
+			if (_selectionStep == 1)
+			{
+				_leftKeys[_selectedPlayer] = key;
+				_hasLeftKey[_selectedPlayer] = true;
+				_usedKeys.Add(key);
 
-			// Column headers
-			root.AddChild(BuildHeaderRow());
+				_selectionStep = 2;
+			}
+			else if (_selectionStep == 2)
+			{
+				_rightKeys[_selectedPlayer] = key;
+				_hasRightKey[_selectedPlayer] = true;
+				_usedKeys.Add(key);
 
-			// Player slot rows
+				_selectedPlayer = -1;
+				_selectionStep = 0;
+			}
+
+			UpdateAllPlayerRows();
+			UpdateControlButtons();
+			UpdateStartButton();
+		}
+
+		private void ClearPlayerControls(int playerIndex)
+		{
+			if (_hasLeftKey[playerIndex])
+				_usedKeys.Remove(_leftKeys[playerIndex]);
+
+			if (_hasRightKey[playerIndex])
+				_usedKeys.Remove(_rightKeys[playerIndex]);
+
+			_hasLeftKey[playerIndex] = false;
+			_hasRightKey[playerIndex] = false;
+		}
+
+		private void UpdateAllPlayerRows()
+		{
 			for (int i = 0; i < MaxPlayers; i++)
-				root.AddChild(BuildSlotRow(i));
-
-			root.AddChild(new HSeparator());
-
-			// Target score selector
-			root.AddChild(BuildTargetScoreRow());
-
-			root.AddChild(new HSeparator());
-
-			// Start button
-			_startButton = new Button { Text = "START MATCH", Disabled = true };
-			_startButton.Connect("pressed", this, nameof(OnStartPressed));
-			root.AddChild(_startButton);
+				UpdatePlayerRow(i);
 		}
 
-		private HBoxContainer BuildHeaderRow()
+		private void UpdatePlayerRow(int index)
 		{
-			var row = new HBoxContainer();
-			MakeCell(row, "",            30);   // swatch placeholder
-			MakeCell(row, "Player",      130);
-			MakeCell(row, "Turn Left",   110);
-			MakeCell(row, "Turn Right",  110);
-			MakeCell(row, "",            100);  // join button placeholder
-			return row;
+			bool currentlySelecting = _selectedPlayer == index;
+
+			if (_hasLeftKey[index])
+				_leftKeyLabels[index].Text = KeyLabel(_leftKeys[index]);
+			else if (currentlySelecting && _selectionStep == 1)
+				_leftKeyLabels[index].Text = "Select...";
+			else
+				_leftKeyLabels[index].Text = "-";
+
+			if (_hasRightKey[index])
+				_rightKeyLabels[index].Text = KeyLabel(_rightKeys[index]);
+			else if (currentlySelecting && _selectionStep == 2)
+				_rightKeyLabels[index].Text = "Select...";
+			else
+				_rightKeyLabels[index].Text = "-";
+
+			_playerRows[index].Modulate = currentlySelecting
+				? new Color(1f, 1f, 0.75f)
+				: Colors.White;
 		}
 
-		private HBoxContainer BuildSlotRow(int i)
+		private void UpdateControlButtons()
 		{
-			var row = new HBoxContainer();
-			row.AddConstantOverride("separation", 8);
-
-			// Color swatch
-			var swatch = new ColorRect();
-			swatch.Color          = PlayerColors[i];
-			swatch.RectMinSize    = new Vector2(24, 24);
-			swatch.SizeFlagsHorizontal = (int)SizeFlags.ShrinkCenter;
-			swatch.Modulate       = new Color(0.4f, 0.4f, 0.4f); // dimmed until joined
-			_colorSwatches[i]     = swatch;
-			row.AddChild(swatch);
-
-			// Player name
-			var name = new Label { Text = PlayerNames[i] };
-			name.RectMinSize = new Vector2(130, 0);
-			row.AddChild(name);
-
-			// Left key button
-			var leftBtn = new Button { Text = KeyLabel(_leftKeys[i]) };
-			leftBtn.RectMinSize = new Vector2(100, 0);
-			leftBtn.Connect("pressed", this, nameof(OnLeftKeyPressed),
-				new Godot.Collections.Array { i });
-			_leftKeyButtons[i] = leftBtn;
-			row.AddChild(leftBtn);
-
-			// Right key button
-			var rightBtn = new Button { Text = KeyLabel(_rightKeys[i]) };
-			rightBtn.RectMinSize = new Vector2(100, 0);
-			rightBtn.Connect("pressed", this, nameof(OnRightKeyPressed),
-				new Godot.Collections.Array { i });
-			_rightKeyButtons[i] = rightBtn;
-			row.AddChild(rightBtn);
-
-			// Join / Leave button
-			var joinBtn = new Button { Text = "Join" };
-			joinBtn.RectMinSize = new Vector2(90, 0);
-			joinBtn.Connect("pressed", this, nameof(OnJoinPressed),
-				new Godot.Collections.Array { i });
-			_joinButtons[i] = joinBtn;
-			row.AddChild(joinBtn);
-
-			return row;
-		}
-
-		private HBoxContainer BuildTargetScoreRow()
-		{
-			var row = new HBoxContainer();
-			row.AddConstantOverride("separation", 8);
-
-			var label = new Label { Text = "Target Score:" };
-			row.AddChild(label);
-
-			var decBtn = new Button { Text = "◀" };
-			decBtn.Connect("pressed", this, nameof(OnTargetScoreDec));
-			row.AddChild(decBtn);
-
-			_targetScoreLabel = new Label
+			foreach (var pair in _controlButtons)
 			{
-				Text         = TargetScoreOptions[_targetScoreIndex].ToString(),
-				RectMinSize  = new Vector2(36, 0),
-				Align        = Label.AlignEnum.Center,
-			};
-			row.AddChild(_targetScoreLabel);
-
-			var incBtn = new Button { Text = "▶" };
-			incBtn.Connect("pressed", this, nameof(OnTargetScoreInc));
-			row.AddChild(incBtn);
-
-			return row;
-		}
-
-		// ── signal handlers ───────────────────────────────────────────────────
-
-		private void OnJoinPressed(int index)
-		{
-			_slotActive[index]          = !_slotActive[index];
-			_joinButtons[index].Text    = _slotActive[index] ? "Leave" : "Join";
-			_colorSwatches[index].Modulate = _slotActive[index]
-				? Colors.White
-				: new Color(0.4f, 0.4f, 0.4f);
-			RefreshStartButton();
-		}
-
-		private void OnLeftKeyPressed(int index)  => StartRebind(index, true,  _leftKeyButtons[index]);
-		private void OnRightKeyPressed(int index) => StartRebind(index, false, _rightKeyButtons[index]);
-
-		private void OnTargetScoreDec()
-		{
-			if (_targetScoreIndex > 0)
-			{
-				_targetScoreIndex--;
-				_targetScoreLabel.Text = TargetScoreOptions[_targetScoreIndex].ToString();
+				pair.Value.Disabled = _usedKeys.Contains(pair.Key);
 			}
 		}
 
-		private void OnTargetScoreInc()
+		private void UpdateStartButton()
 		{
-			if (_targetScoreIndex < TargetScoreOptions.Length - 1)
+			_startButton.Disabled = GetParticipatingPlayerCount() < 1;
+		}
+
+		private int GetParticipatingPlayerCount()
+		{
+			int count = 0;
+
+			for (int i = 0; i < MaxPlayers; i++)
 			{
-				_targetScoreIndex++;
-				_targetScoreLabel.Text = TargetScoreOptions[_targetScoreIndex].ToString();
+				if (IsParticipating(i))
+					count++;
 			}
+
+			return count;
+		}
+
+		private bool IsParticipating(int index)
+		{
+			return _hasLeftKey[index] && _hasRightKey[index];
+		}
+
+		private void OnTargetScoreDecrease()
+		{
+			if (_targetScoreIndex <= 0)
+				return;
+
+			_targetScoreIndex--;
+			_targetScoreLabel.Text = TargetScoreOptions[_targetScoreIndex].ToString();
+		}
+
+		private void OnTargetScoreIncrease()
+		{
+			if (_targetScoreIndex >= TargetScoreOptions.Length - 1)
+				return;
+
+			_targetScoreIndex++;
+			_targetScoreLabel.Text = TargetScoreOptions[_targetScoreIndex].ToString();
 		}
 
 		private void OnStartPressed()
 		{
 			var players = new List<IPlayerConfig>();
+
 			for (int i = 0; i < MaxPlayers; i++)
 			{
-				if (!_slotActive[i]) continue;
+				if (!IsParticipating(i))
+					continue;
+
 				var input = new KeyboardPlayerInput(i, _leftKeys[i], _rightKeys[i]);
 				players.Add(new PlayerConfig(i, PlayerNames[i], PlayerColors[i], input));
 			}
 
-			GameData.Instance.Players     = players;
+			if (players.Count < 1)
+				return;
+
+			GameData.Instance.Players = players;
 			GameData.Instance.TargetScore = TargetScoreOptions[_targetScoreIndex];
 
 			GetTree().ChangeScene("res://Scenes/Countdown.tscn");
 		}
 
-		// ── rebind helpers ────────────────────────────────────────────────────
-
-		private void StartRebind(int index, bool isLeft, Button button)
+		private static string KeyLabel(KeyList key)
 		{
-			if (_rebindSlot >= 0) CancelRebind();
-
-			_rebindSlot    = index;
-			_rebindIsLeft  = isLeft;
-			_rebindButton  = button;
-			button.Text    = "Press key…";
-			button.Modulate = new Color(1f, 1f, 0.2f);
+			return OS.GetScancodeString((uint)key);
 		}
-
-		private void CancelRebind()
-		{
-			if (_rebindButton != null)
-			{
-				var key = _rebindIsLeft ? _leftKeys[_rebindSlot] : _rightKeys[_rebindSlot];
-				_rebindButton.Text    = KeyLabel(key);
-				_rebindButton.Modulate = Colors.White;
-			}
-			_rebindSlot   = -1;
-			_rebindButton = null;
-		}
-
-		// ── utility ───────────────────────────────────────────────────────────
-
-		private void RefreshStartButton()
-		{
-			int count = 0;
-			foreach (var active in _slotActive)
-				if (active) count++;
-			_startButton.Disabled = count < 2;
-		}
-
-		private static void MakeCell(HBoxContainer parent, string text, float width)
-		{
-			var label = new Label { Text = text, RectMinSize = new Vector2(width, 0) };
-			parent.AddChild(label);
-		}
-
-		private static string KeyLabel(KeyList key) =>
-			OS.GetKeystringFromScancode((int)key);
 	}
 }
