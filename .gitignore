@@ -1,20 +1,18 @@
-# Godot 4+ specific ignores (Safe to keep, but Godot 3 doesn't use this)
+# Godot Engine Cache & Core
 .godot/
-.nomedia
-
-# Godot 3-specific cache (CRUCIAL ADDITION)
 .import/
-.mono/          # (Keep this if you are using the C#/.NET version of Godot 3)
+.nomedia
+*.tmp
+
+# Mono / C# Metadata & Build Outputs
+.mono/
+data_*/
+mono_crash.*.json
 
 # Build and export configs
 export.cfg
-export_presets.cfg     # (Make sure this matches your project; Godot 3 often uses export_presets.cfg)
+export_presets.cfg
 export_credentials.cfg
-*.tmp
 
-# Imported translations (automatically generated from CSV files)
+# Automatically generated files
 *.translation
-
-# Mono-specific ignores
-data_*/
-mono_crash.*.json
