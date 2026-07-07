@@ -302,6 +302,6 @@ namespace AchtungDieSpurve.Lobby
 		}
 
 		private static string KeyLabel(KeyList key) =>
-			OS.GetKeystringFromScancode((int)key);
+			OS.GetScancodeString((uint)key);
 	}
 }
