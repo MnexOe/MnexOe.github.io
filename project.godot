@@ -19,9 +19,18 @@ config/main_scene="res://Scenes/Lobby.tscn"
 
 GameData="*res://Scripts/GameData.cs"
 
+[display]
+
+window/size/width=1324
+
+[global]
+
+theme=false
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+theme/custom_font="res://Assets/Fonts/Baloo2-VariableFont_wght.ttf"
 
 [mono]
 

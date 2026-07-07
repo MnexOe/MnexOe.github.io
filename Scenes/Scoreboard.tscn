@@ -1,0 +1,116 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/Scoreboard/ScoreboardManager.cs" type="Script" id=1]
+[ext_resource path="res://Assets/Fonts/Baloo2-VariableFont_wght.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Assets/theme1.tres" type="Theme" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 20
+font_data = ExtResource( 2 )
+
+[node name="Scoreboard" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 3 )
+script = ExtResource( 1 )
+
+[node name="Layout" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="GameArea" type="ViewportContainer" parent="Layout"]
+margin_right = 1020.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="GameViewport" type="Viewport" parent="Layout/GameArea"]
+size = Vector2( 1020, 600 )
+handle_input_locally = false
+render_target_update_mode = 3
+
+[node name="ScorePanel" type="PanelContainer" parent="Layout"]
+self_modulate = Color( 0, 0.960784, 0.831373, 1 )
+margin_left = 1024.0
+margin_right = 1324.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 300, 0 )
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Layout/ScorePanel"]
+self_modulate = Color( 0, 0.960784, 0.831373, 1 )
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 293.0
+margin_bottom = 593.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 28
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 28
+
+[node name="Content" type="VBoxContainer" parent="Layout/ScorePanel/Margin"]
+margin_left = 20.0
+margin_top = 28.0
+margin_right = 266.0
+margin_bottom = 558.0
+custom_constants/separation = 10
+
+[node name="HeadingLabel" type="Label" parent="Layout/ScorePanel/Margin/Content"]
+margin_right = 246.0
+margin_bottom = 33.0
+custom_fonts/font = SubResource( 1 )
+text = "Spurve!"
+align = 1
+
+[node name="RaceToLabel" type="Label" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 43.0
+margin_right = 246.0
+margin_bottom = 76.0
+custom_fonts/font = SubResource( 1 )
+text = "You race to 30"
+align = 1
+
+[node name="HSeparator" type="HSeparator" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 86.0
+margin_right = 246.0
+margin_bottom = 90.0
+
+[node name="PreListSpacer" type="Control" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 100.0
+margin_right = 246.0
+margin_bottom = 114.0
+rect_min_size = Vector2( 0, 14 )
+
+[node name="PlayerList" type="VBoxContainer" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 124.0
+margin_right = 246.0
+margin_bottom = 124.0
+custom_constants/separation = 16
+
+[node name="Spacer" type="Control" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 134.0
+margin_right = 246.0
+margin_bottom = 430.0
+size_flags_vertical = 3
+
+[node name="HSeparator2" type="HSeparator" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 440.0
+margin_right = 246.0
+margin_bottom = 444.0
+
+[node name="SpaceHint" type="Label" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 454.0
+margin_right = 246.0
+margin_bottom = 487.0
+custom_fonts/font = SubResource( 1 )
+text = "SPACE  to play"
+align = 1
+
+[node name="EscHint" type="Label" parent="Layout/ScorePanel/Margin/Content"]
+margin_top = 497.0
+margin_right = 246.0
+margin_bottom = 530.0
+custom_fonts/font = SubResource( 1 )
+text = "ESC  to quit"
+align = 1

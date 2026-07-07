@@ -291,7 +291,7 @@ namespace AchtungDieSpurve.Lobby
 			GameData.Instance.Players = players;
 			GameData.Instance.TargetScore = TargetScoreOptions[_targetScoreIndex];
 
-			GetTree().ChangeScene("res://Scenes/Countdown.tscn");
+			GetTree().ChangeScene("res://Scenes/Scoreboard.tscn");
 		}
 
 		private static string KeyLabel(KeyList key)
