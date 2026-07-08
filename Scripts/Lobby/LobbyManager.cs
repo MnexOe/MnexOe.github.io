@@ -12,10 +12,10 @@ namespace AchtungDieSpurve.Lobby
 
 		private static readonly Color[] PlayerColors =
 		{
-			new Color(1f, 0.3f, 0.3f),
-			new Color(0.3f, 0.5f, 1f),
-			new Color(1f, 1f, 0.2f),
-			new Color(0.3f, 1f, 0.3f),
+			new Color("#9B5DE5"),
+			new Color("#FEE440"),
+			new Color("#00BBF9"),
+			new Color("#F15BB5"),
 		};
 
 		private static readonly string[] PlayerNames =

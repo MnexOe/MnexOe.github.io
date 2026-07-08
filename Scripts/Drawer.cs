@@ -89,6 +89,11 @@ public class Drawer : Node2D
 		trail.AddPoint(position);
 	}
 
+	public void SetColor(Color color)
+	{
+		trail.DefaultColor = color;
+	}
+
 	public override void _Process(float delta)
 	{
 		if (trail.GetPointCount() - compressedIndex > CompressionThreshold)

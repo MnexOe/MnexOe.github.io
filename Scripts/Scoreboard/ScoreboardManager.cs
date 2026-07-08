@@ -58,18 +58,20 @@ namespace AchtungDieSpurve.Scoreboard
 			}
 		}
 
-		public void RoundEnded(int winnerPlayerId)
+		public void RoundEnded(Dictionary<int, int> pointsPerPlayerId)
 		{
 			var players = GameData.Instance?.Players;
 			if (players == null) return;
 
 			for (int i = 0; i < players.Count; i++)
 			{
-				if (players[i].PlayerId != winnerPlayerId) continue;
-				_scores[i]++;
+				int playerId = players[i].PlayerId;
+				if (!pointsPerPlayerId.TryGetValue(playerId, out int pts))
+					continue;
+
+				_scores[i] += pts;
 				if (i < _scoreLabels.Count)
 					_scoreLabels[i].Text = _scores[i].ToString();
-				break;
 			}
 
 			GetTree().Paused = false;

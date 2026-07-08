@@ -14,19 +14,25 @@ anchor_bottom = 1.0
 theme = ExtResource( 3 )
 script = ExtResource( 1 )
 
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 1 )
+
 [node name="Layout" type="HBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+custom_constants/separation = 0
 
 [node name="GameArea" type="ViewportContainer" parent="Layout"]
-margin_right = 1020.0
+margin_right = 1024.0
 margin_bottom = 600.0
-size_flags_horizontal = 3
+rect_min_size = Vector2( 1024, 600 )
 size_flags_vertical = 3
 stretch = true
 
 [node name="GameViewport" type="Viewport" parent="Layout/GameArea"]
-size = Vector2( 1020, 600 )
+size = Vector2( 1024, 600 )
 handle_input_locally = false
 render_target_update_mode = 3
 
@@ -36,6 +42,7 @@ margin_left = 1024.0
 margin_right = 1324.0
 margin_bottom = 600.0
 rect_min_size = Vector2( 300, 0 )
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Margin" type="MarginContainer" parent="Layout/ScorePanel"]
